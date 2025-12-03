@@ -499,7 +499,13 @@ def get_handlers():
         CallbackQueryHandler(start_chat_cb, pattern="^start_chat$"),
         CallbackQueryHandler(cancel_chat_cb, pattern="^cancel_chat$"),
         # Admin menu buttons - must be before other text handlers
-        MessageHandler(filters.TEXT & filters.Regex("^(✅ الموافقة على الدفع|👥 قائمة الطلاب|📢 بث جماعي|📊 الإحصائيات|🏠 الرئيسية)$"), handle_admin_menu_text),
+        MessageHandler(
+            filters.TEXT
+            & filters.Regex(
+                "^(✅ الموافقة على الدفع|👥 قائمة الطلاب|📢 بث جماعي|📢 ارسال رسالة|📢  ارسال رسالة|📊 الإحصائيات|🏠 الرئيسية)$"
+            ),
+            handle_admin_menu_text,
+        ),
     ]
 
 
