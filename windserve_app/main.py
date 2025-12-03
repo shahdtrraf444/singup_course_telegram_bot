@@ -132,6 +132,11 @@ async def home(request: Request):
     )
 
 
+@app.get("/api/health")
+async def api_health():
+    return {"status": "ok"}
+
+
 @app.get("/materials", response_class=HTMLResponse)
 async def materials(request: Request):
     return templates.TemplateResponse(
