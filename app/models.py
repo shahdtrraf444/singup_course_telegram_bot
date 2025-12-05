@@ -24,6 +24,8 @@ class User(Document):
     full_name: str
     phone: str
     email: str
+    study_year: Optional[int] = None
+    specialization: Optional[str] = None
     registered_at: datetime = Field(default_factory=datetime.utcnow)
     last_active: datetime = Field(default_factory=datetime.utcnow)
     courses: List[CourseEnrollment] = Field(default_factory=list)

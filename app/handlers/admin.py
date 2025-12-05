@@ -411,11 +411,15 @@ async def admin_stat_select_cb(update: Update, context: ContextTypes.DEFAULT_TYP
         c = get_course_by_id(e.course_id) or {"name": e.course_id}
         course_lines.append(f"• {c.get('name')}")
     courses_block = "\n".join(course_lines) if course_lines else "لا يوجد مواد مسجلة."
+    year_text = user.study_year if getattr(user, "study_year", None) else "-"
+    spec_text = user.specialization if getattr(user, "specialization", None) else "-"
     text = (
         f"👤 الاسم: {name}\n"
         f"🆔 المعرف: {tid}\n"
         f"📞 الرقم: {user.phone or '-'}\n"
         f"✉️ البريد: {user.email or '-'}\n"
+        f"📚 السنة الدراسية: {year_text}\n"
+        f"🎓 التخصص: {spec_text}\n"
         f"📚 عدد المواد المسجلة: {len(courses)}\n\n"
         f"📋 الأسماء:\n{courses_block}"
     )
