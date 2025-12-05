@@ -372,6 +372,64 @@ async def students_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
+async def stats_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not _is_admin(context, update.effective_user.id):
+        await update.message.reply_text("❌ غير مخول.")
+        return
+    users: List[User] = await User.find_all().to_list()
+    buttons = []
+    for u in users[:100]:
+        name = u.full_name or f"الطالب {u.telegram_id}"
+        buttons.append([InlineKeyboardButton(f"👤 {name}", callback_data=f"admin_stat_{u.telegram_id}")])
+    if not buttons:
+        await update.message.reply_text("❌ لا يوجد طلاب.")
+        return
+    await update.message.reply_text(
+        f"📊 **إحصائيات المعلم**\n\n"
+        f"👥 **عدد المستخدمين:** {len(users)}\n\n"
+        f"اختر طالبًا لعرض تفاصيله:",
+        reply_markup=InlineKeyboardMarkup(buttons)
+    )
+
+
+async def admin_stat_select_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    q = update.callback_query
+    await q.answer()
+    if not _is_admin(context, q.from_user.id):
+        await q.edit_message_text("❌ غير مخول.")
+        return
+    _, _, tid = q.data.partition("admin_stat_")
+    try:
+        tid = int(tid)
+    except Exception:
+        await q.edit_message_text("❌ معرف غير صالح.")
+        return
+    user: User = await User.find_one(User.telegram_id == tid)
+    if not user:
+        await q.edit_message_text("❌ الطالب غير موجود.")
+        return
+    name = user.full_name or f"الطالب {tid}"
+    courses = user.courses or []
+    course_lines = []
+    for e in courses:
+        c = get_course_by_id(e.course_id) or {"name": e.course_id}
+        course_lines.append(f"• {c.get('name')}")
+    courses_block = "\n".join(course_lines) if course_lines else "لا يوجد مواد مسجلة."
+    year_text = user.study_year if getattr(user, "study_year", None) else "-"
+    spec_text = user.specialization if getattr(user, "specialization", None) else "-"
+    text = (
+        f"👤 الاسم: {name}\n"
+        f"🆔 المعرف: {tid}\n"
+        f"📞 الرقم: {user.phone or '-'}\n"
+        f"✉️ البريد: {user.email or '-'}\n"
+        f"📚 السنة الدراسية: {year_text}\n"
+        f"🎓 التخصص: {spec_text}\n"
+        f"📚 عدد المواد المسجلة: {len(courses)}\n\n"
+        f"📋 الأسماء:\n{courses_block}"
+    )
+    await q.edit_message_text(text)
+
+
 async def admin_msg_select_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
