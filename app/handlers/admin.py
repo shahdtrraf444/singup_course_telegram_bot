@@ -61,8 +61,10 @@ async def handle_admin_menu_text(update: Update, context: ContextTypes.DEFAULT_T
         await admin_cmd(update, context)
     elif text == "👥 قائمة الطلاب":
         await students_cmd(update, context)
-    elif text in ("📢 بث جماعي", "📢 ارسال رسالة", "📢  ارسال رسالة"):
-        # زر "ارسال رسالة" أو "بث جماعي" يفتح الآن قائمة الطلاب لإرسال رسالة لطالب محدد
+    elif text == "📢 بث جماعي":
+        await broadcast_cmd(update, context)
+    elif text in ("📢 ارسال رسالة", "📢  ارسال رسالة"):
+        # زر "ارسال رسالة" يفتح الآن قائمة الطلاب لإرسال رسالة لطالب محدد
         await students_cmd(update, context)
     elif text == "📊 الإحصائيات":
         await stats_cmd(update, context)
