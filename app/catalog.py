@@ -278,6 +278,14 @@ MATERIALS = {
         "instructor": "المهندسة شهد طراف",
         "description": "معالجة الصوت والصورة والفيديو"
     },
+    "year4_sem1_smart_search": {
+        "id": "year4_sem1_smart_search",
+        "name": "خوارزميات بحث ذكية",
+        "year": 4,
+        "semester": 1,
+        "instructor": "المهندسة شهد طراف",
+        "description": "خوارزميات البحث الذكية وتطبيقاتها"
+    },
     "year4_sem1_concurrent": {
         "id": "year4_sem1_concurrent",
         "name": "برمجة تفرعية",
@@ -375,7 +383,7 @@ MATERIALS_BY_YEAR = {
             "year3_sem2_software_eng1", "year3_sem2_complexity"]
     },
     4: {
-        1: ["year4_sem1_python", "year4_sem1_neural_networks", "year4_sem1_multimedia", 
+        1: ["year4_sem1_python", "year4_sem1_neural_networks", "year4_sem1_smart_search", "year4_sem1_multimedia", 
             "year4_sem1_concurrent"],
         2: ["year4_sem2_distributed", "year4_sem2_compilers", "year4_sem2_machine_learning", 
             "year4_sem2_computer_vision"]
