@@ -10,7 +10,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from .data import YEARS, material_details, COURSES, get_course
-from dotenv import load_dotenv
 import requests
 from app.models import User, CourseEnrollment
 from app.db import init_db
@@ -19,8 +18,9 @@ BASE_DIR = Path(__file__).resolve().parent
 ROOT_DIR = BASE_DIR.parent
 TEMPLATES_DIR = BASE_DIR / "templates"
 STATIC_DIR = BASE_DIR / "static"
-UPLOADS_DIR = BASE_DIR / "uploads"
-STORAGE_DIR = BASE_DIR / "storage"
+DATA_DIR = Path(os.getenv("APP_DATA_DIR", str(BASE_DIR))).resolve()
+UPLOADS_DIR = Path(os.getenv("UPLOADS_DIR", str(DATA_DIR / "uploads"))).resolve()
+STORAGE_DIR = Path(os.getenv("STORAGE_DIR", str(DATA_DIR / "storage"))).resolve()
 GROUP_LINKS_PATH = ROOT_DIR / "data" / "group_links.json"
 
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
@@ -49,14 +49,10 @@ async def ensure_session(request: Request, call_next):
 
 @app.on_event("startup")
 async def startup():
-    load_dotenv()
     mongo_url = os.getenv("MONGODB_URL")
     db_name = os.getenv("MONGODB_DB_NAME")
     if mongo_url and db_name:
-        try:
-            await init_db(mongo_url, db_name)
-        except Exception:
-            pass
+        await init_db(mongo_url, db_name)
 
 
 def _tg_send_message(chat_id: int, text: str):
@@ -268,7 +264,7 @@ async def upload_proof(
         "id": uuid.uuid4().hex,
         "item_type": item_type,
         "item_id": item_id,
-        "file": str(target.relative_to(BASE_DIR)),
+        "file": (Path("uploads") / sid / target.name).as_posix(),
         "payment_method": payment_method,
         "telegram_id": int(telegram_id) if telegram_id.isdigit() else None,
         "sid": sid,

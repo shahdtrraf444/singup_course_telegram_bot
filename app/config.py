@@ -1,6 +1,5 @@
 import os
 from dataclasses import dataclass
-from dotenv import load_dotenv
 
 
 def str_to_bool(v: str) -> bool:
@@ -22,7 +21,6 @@ class Config:
 
 
 def load_config() -> Config:
-    load_dotenv()
     port_str = os.getenv("PORT") or os.getenv("WEBAPP_PORT") or "8080"
     return Config(
         TELEGRAM_BOT_TOKEN=os.getenv("TELEGRAM_BOT_TOKEN", ""),

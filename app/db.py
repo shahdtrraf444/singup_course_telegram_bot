@@ -8,6 +8,12 @@ _client = None
 
 async def init_db(mongo_url: str, db_name: str):
     global _client
+    if _client is not None:
+        try:
+            await _client.admin.command("ping")
+            return
+        except Exception:
+            _client = None
     tls_kwargs: Dict[str, Any] = {}
     try:
         if mongo_url.startswith("mongodb+srv://") or "mongodb.net" in mongo_url:

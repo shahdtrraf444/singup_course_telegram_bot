@@ -27,9 +27,10 @@ def setup_logging(debug: bool):
     )
 
 
-def build_application(cfg):
+def build_application(cfg, init_db_on_startup: bool = True):
     async def post_init(app: Application):
-        await init_db(cfg.MONGODB_URL, cfg.MONGODB_DB_NAME)
+        if init_db_on_startup:
+            await init_db(cfg.MONGODB_URL, cfg.MONGODB_DB_NAME)
         app.bot_data["ADMIN_ID"] = cfg.TELEGRAM_ADMIN_ID
         app.bot_data["SHAM"] = cfg.SHAM_CASH_NUMBER
         app.bot_data["HARAM"] = cfg.HARAM_NUMBER
